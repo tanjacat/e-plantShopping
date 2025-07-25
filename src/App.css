@@ -1,147 +1,230 @@
 /* LandingPage.css */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  overflow: hidden;
-}
 
-.landing-page {
-  position: relative;
-  width: 100vw;
-  height: 100vh;
-  background-color: #f8f8f8;
-}
-
-.background-image {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: url('https://cdn.pixabay.com/photo/2017/07/13/08/59/greenhouse-2499758_1280.jpg');
-  background-size: 100% 100%;
-  background-position: center;
-  filter: brightness(0.8);
-}
-.content {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  width: 100vw;
- top: 100px;
-  backdrop-filter: blur(4px);
-  background-color: rgba(0,0,0,0.5);
-  gap: 20px;
-}
-
-.landing_content {
- margin-top: 430px;
-  margin-left: 100px;
-  transform: translate(-50%, -50%);
-  z-index: 1;
-  text-align: center;
-  /* background-color: red; */
-  width: 400px;
-  height: 400px;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  justify-content: center;
-  gap: 10px;
-}
-
-.content p,
-.content h1 {
-  color: white;
-}
-
-.content h1 {
-  font-size: 48px;
-  margin-bottom: 10px;
-}
-
-.content p {
-  font-size: 25px;
-}
-
-.divider {
-  width: 50px;
-  height: 2px;
-  background-color: #4caf50;
-  margin: 10px 0;
-}
-
-.get-started-button {
-  padding: 15px 25px;
-  font-size: 23px;
-  border: none;
-  border-radius: 5px;
-  background-color: #4caf50;
-  color: white;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  margin-top: 40px;
-}
-
-.get-started-button:hover {
-  background-color: #45a049;
-}
-
-/* ProductList.css */
-
-.product-list-container {
-  position: absolute;
-  overflow-x: hidden;
-  top: 100vh;
-  /* Initially off-screen */
-  left: 0;
-  width: 100%;
-  height: 100vh;
-  background-color: rgba(255, 255, 255, 0.9);
-  /* Adjust background opacity as needed */
-  transition: top 0.5s ease;
-  /* Smooth transition for top property */
-  overflow-y: auto;
-  /* Enable vertical scrolling */
-  z-index: 2;
-  /* Ensure it's above landing page content */
-  backdrop-filter: blur(5px);
-}
-
-.product-list-container.visible {
-  top: 0;
-}
-/* LandingPage.css */
-@media screen and (max-width: 768px) {
-  .content {
-    flex-direction: column;
-    align-items: center;
+/* FIX 1: Removed global 'overflow: hidden;' from '*'.
+ * This was the primary cause of text being cut off across the entire page.
+ */
+ * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* FIX 2: 'landing-page' should handle its own overflow if needed. */
+  .landing-page {
+    position: relative;
     width: 100vw;
     height: 100vh;
+    background-color: #f8f8f8; /* This color will likely be hidden by the background image */
+    overflow: hidden; /* Keep to prevent main page scroll if content somehow overflows this section */
   }
-
+  
+  /* FIX 3: Background image styling. */
+  .background-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('https://cdn.pixabay.com/photo/2017/07/13/08/59/greenhouse-2499758_1280.jpg');
+    background-size: cover; /* Ensures image covers the area without distortion */
+    background-position: center;
+    filter: brightness(0.8); /* Dims the background for better text readability */
+    z-index: 0; /* Ensures the image is behind the main content */
+  }
+  
+  /* FIX 4: Optimized '.content' container for the desired side-by-side (row) layout.
+   * Removed 'top: 100px;' that caused unwanted offset.
+   * Added padding to prevent child content from touching the viewport edges.
+   * 'gap' provides spacing between the two main content blocks.
+   */
+  .content {
+    position: relative; /* To be above the background-image */
+    z-index: 1; /* Ensures it's above the background */
+    display: flex;
+    flex-direction: row; /* Explicitly set to 'row' for side-by-side layout (left and right text) */
+    justify-content: center; /* Horizontally centers the two content blocks within the viewport */
+    align-items: center; /* Vertically centers the content blocks */
+    height: 100vh; /* Ensures it takes up the full viewport height */
+    width: 100vw; /* Ensures it takes up the full viewport width */
+    padding: 0 40px; /* Adds horizontal padding from the left/right edges of the viewport */
+    backdrop-filter: blur(4px); /* Adds a blur effect to the background visible through this layer */
+    background-color: rgba(0,0,0,0.5); /* Semi-transparent overlay for better text contrast */
+    gap: 40px; /* Space between the 'landing_content' and 'aboutus_container' blocks */
+    /* overflow: hidden; */ /* Removing this from content, let inner elements manage overflow if needed */
+  }
+  
+  /* FIX 5: Adjusted '.landing_content' for proper positioning and sizing.
+   * Removed problematic 'margin-top', 'margin-left', and 'transform' which caused cutoff.
+   * Defined responsive 'width' and 'max-width'.
+   * 'text-align: left' as seen in the screenshot.
+   * 'align-items: flex-start' to align its internal children (h1, p, button) to the left.
+   */
   .landing_content {
-    margin-top: 100px; /* Adjust as needed */
-    margin-left: 0;
-    width: 80%; /* Adjust as needed */
-    text-align: center;
+    text-align: left; /* Aligns text within this block to the left */
+    color: white; /* Ensures text is visible against the background */
+    padding: 20px; /* Internal padding to prevent text from touching edges of this block */
+    width: 50%; /* Takes up approximately half the available width of its parent (.content) */
+    max-width: 500px; /* Limits its maximum width on very large screens for better readability */
+    flex-shrink: 0; /* Prevents this block from shrinking too much if space is tight */
+    display: flex; /* Makes this block a flex container for its own children */
+    flex-direction: column; /* Stacks its own children (h1, p, button) vertically */
+    align-items: flex-start; /* Aligns its children (h1, p, button) to the start (left) */
+    justify-content: center; /* Vertically centers its children within its own height */
+    height: auto; /* Allows its height to adjust to its content */
   }
-
+  
+  /* Ensure h1, p, divider, and button inside landing_content are aligned to the left */
+  .landing_content h1,
+  .landing_content p,
+  .landing_content .divider,
+  .landing_content .get-started-button {
+      align-self: flex-start; /* Overrides default centering from parent for explicit left alignment */
+  }
+  
+  /* FIX 6: Adjusted '.aboutus_container' for proper sizing and text alignment. */
   .aboutus_container {
-    margin-top: 20px; /* Adjust as needed */
-    width: 80%; /* Adjust as needed */
+    color: white; /* Ensures content within AboutUs component is white */
+    padding: 20px; /* Internal padding for the AboutUs content */
+    width: 50%; /* Takes up approximately half the available width of its parent (.content) */
+    max-width: 700px; /* Limits its maximum width on very large screens */
+    flex-shrink: 0; /* Prevents this block from shrinking too much */
+    text-align: left; /* Aligns text within AboutUs to the left */
+    height: auto; /* Allows its height to adjust to its content */
   }
-}
-
-@media screen and (max-width: 480px) {
-  .landing_content {
-    margin-top: 50px; /* Adjust as needed */
-    width: 90%; /* Adjust as needed */
+  
+  /* FIX 7: General text styling for h1 and p within the landing page content.
+   * 'word-break: break-word;' and 'white-space: normal;' ensure text wraps correctly.
+   */
+  .content h1 {
+    font-size: 48px;
+    margin-bottom: 10px;
+    line-height: 1.2; /* Adjusts line spacing */
+    word-break: break-word; /* Prevents long words from overflowing by breaking them */
+    white-space: normal; /* Allows text to wrap to new lines */
   }
-
-  .aboutus_container {
-    width: 90%; /* Adjust as needed */
+  
+  .content p {
+    font-size: 25px;
+    line-height: 1.5;
+    word-break: break-word;
+    white-space: normal;
   }
-}
+  
+  .divider {
+    width: 50px;
+    height: 2px;
+    background-color: #4caf50;
+    margin: 10px 0; /* Provides vertical margin */
+    /* Its horizontal alignment is handled by the parent flex container's 'align-items' */
+  }
+  
+  .get-started-button {
+    padding: 15px 25px;
+    font-size: 23px;
+    border: none;
+    border-radius: 5px;
+    background-color: #4caf50;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 40px;
+  }
+  
+  .get-started-button:hover {
+    background-color: #45a049;
+  }
+  
+  /* ProductList.css (This block remains unchanged as it's for ProductList component) */
+  .product-list-container {
+    position: absolute;
+    overflow-x: hidden;
+    top: 100vh; /* Initially off-screen */
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(255, 255, 255, 0.9);
+    transition: top 0.5s ease; /* Smooth transition for top property */
+    overflow-y: auto; /* Enable vertical scrolling for product list */
+    z-index: 2; /* Ensures it's above landing page content when visible */
+    backdrop-filter: blur(5px);
+  }
+  
+  .product-list-container.visible {
+    top: 0;
+  }
+  
+  /* FIX 8: Adjusted media queries for responsiveness.
+   * On smaller screens (max-width: 768px), the layout switches to a column for better mobile experience.
+   */
+  @media screen and (max-width: 1024px) {
+      .content {
+          padding: 0 20px; /* Reduce horizontal padding */
+          gap: 20px; /* Reduce gap between content blocks */
+      }
+      .landing_content {
+          width: 48%; /* Adjust width slightly for side-by-side on smaller desktops/laptops */
+      }
+      .aboutus_container {
+          width: 48%; /* Adjust width slightly for side-by-side */
+      }
+      .content h1 {
+          font-size: 40px; /* Smaller H1 */
+      }
+      .content p {
+          font-size: 22px; /* Smaller P */
+      }
+  }
+  
+  @media screen and (max-width: 768px) {
+    .content {
+      flex-direction: column; /* Stack content vertically on tablets and mobiles */
+      padding: 20px; /* More padding when stacked */
+      gap: 30px; /* Adjust gap for column layout */
+      justify-content: flex-start; /* Align content to the top when stacked */
+    }
+  
+    .landing_content {
+      width: 100%; /* Take full width when stacked */
+      max-width: none; /* Remove max-width constraint to allow full width */
+      text-align: center; /* Center text when stacked */
+      align-items: center; /* Center internal items like h1, p, button */
+    }
+  
+    /* Explicitly center children of landing_content when stacked */
+    .landing_content h1,
+    .landing_content p,
+    .landing_content .divider,
+    .landing_content .get-started-button {
+        align-self: center; /* Center these items within landing_content */
+    }
+  
+    .aboutus_container {
+      width: 100%; /* Take full width when stacked */
+      max-width: none; /* Remove max-width constraint */
+      text-align: left; /* Keep left alignment for AboutUs content */
+    }
+  
+    .content h1 {
+      font-size: 2.5em; /* Reduced H1 size for tablets */
+    }
+    .content p {
+      font-size: 1.2em; /* Reduced P size for tablets */
+    }
+  
+    .get-started-button {
+      font-size: 1em;
+      padding: 10px 20px;
+    }
+  }
+  
+  @media screen and (max-width: 480px) {
+    .content h1 {
+      font-size: 2em; /* Even smaller H1 for very small phones */
+    }
+    .content p {
+      font-size: 1em; /* Even smaller P */
+    }
+    .landing_content, .aboutus_container {
+        padding: 15px; /* Reduce padding for very small screens */
+    }
+  }
