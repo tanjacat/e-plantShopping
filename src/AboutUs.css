@@ -1,33 +1,82 @@
-.about-us-container {
-    width: 1000px;
-    /* margin: 0 auto; */
-    /* padding: 20px; */
-    /* background-color: red; */
-    text-align: justify;
-  }
-  
-  .about-us-heading {
-    font-size: 32px;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 20px;
-  }
-  
-  .about-us-description {
-    font-size: 18px;
-    color: #666;
-    margin-bottom: 30px;
-    text-align: center;
-  }
-  
-  .about-us-content {
-    font-size: 18px;
-    margin-bottom: 20px;
-  }
-  .plant_logo_right{
-    text-align: right;
-  }
+/* AboutUs.css */
 
-  .plant_logo_left{
+/* FIX: Added higher specificity for font sizes and ensured proper box-sizing */
+.about-us-container {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: justify;
+    box-sizing: border-box; /* Ensures padding is included in the element's total width/height */
+}
+
+/* FIX: Targeted directly within .about-us-container for higher specificity and adjusted font size */
+.about-us-container .about-us-heading {
+    font-size: 28px; /* Reduced from 32px */
+    font-weight: bold;
+    color: white;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+/* FIX: Targeted directly within .about-us-container and adjusted font size */
+.about-us-container .about-us-description {
+    font-size: 16px; /* Reduced from 18px */
+    color: white;
+    margin-bottom: 20px;
+    text-align: center;
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+/* FIX: Targeted directly within .about-us-container and adjusted font size */
+.about-us-container .about-us-content {
+    font-size: 16px; /* Reduced from 18px */
+    margin-bottom: 15px;
+    color: white;
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+.plant_logo_right {
+    text-align: right;
+}
+
+.plant_logo_left {
     text-align: left;
-  }
+}
+
+/* Media queries for responsiveness: Adjust font sizes and padding on smaller screens */
+@media screen and (max-width: 768px) {
+    /* FIX: Targeted directly within .about-us-container and adjusted font size for tablets */
+    .about-us-container .about-us-heading {
+        font-size: 24px; /* Reduced from 28px */
+        margin-bottom: 10px;
+    }
+    /* FIX: Targeted directly within .about-us-container and adjusted font size for tablets */
+    .about-us-container .about-us-description,
+    .about-us-container .about-us-content {
+        font-size: 14px; /* Reduced from 16px */
+        padding: 0 10px;
+        margin-bottom: 10px;
+    }
+    .about-us-container {
+        padding: 15px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    /* FIX: Targeted directly within .about-us-container and adjusted font size for mobile phones */
+    .about-us-container .about-us-heading {
+        font-size: 20px; /* Reduced from 24px */
+        margin-bottom: 8px;
+    }
+    /* FIX: Targeted directly within .about-us-container and adjusted font size for mobile phones */
+    .about-us-container .about-us-description,
+    .about-us-container .about-us-content {
+        font-size: 13px; /* Reduced from 15px */
+    }
+    .about-us-container {
+        padding: 10px;
+    }
+}
