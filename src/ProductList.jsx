@@ -1,10 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import './ProductList.css'
-import CartItem from './CartItem';
-function ProductList({ onHomeClick }) {
-    const [showCart, setShowCart] = useState(false);
-    const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
+import { useDispatch } from 'react-redux'; // Assume Redux is being used based on your prompt
+import { addItem } from './CartSlice'; // Ensure this path is correct for your project structure
+import './ProductList.css';
+import CartItem from './CartItem'; // This likely represents your main Cart component
 
+function ProductList({ onHomeClick }) {
+    // State to control the visibility of the shopping cart overlay
+    const [showCart, setShowCart] = useState(false);
+    // State to control the visibility of the main product list.
+    // Set to true by default to display the plants initially.
+    const [showPlants, setShowPlants] = useState(true);
+
+    // State to keep track of which products have been added to the cart locally.
+    // This allows for immediate UI feedback on the "Add to Cart" button.
+    // Key: product name, Value: boolean (true if the product is in the cart)
+    const [addedToCart, setAddedToCart] = useState({});
+
+    // Initialize the useDispatch hook to dispatch Redux actions
+    const dispatch = useDispatch();
+
+    // The comprehensive array containing all plant categories and their details
     const plantsArray = [
         {
             category: "Air Purifying Plants",
@@ -212,48 +227,95 @@ function ProductList({ onHomeClick }) {
             ]
         }
     ];
+
+    // Inline styles for the navigation bar, as provided in your prompt.
+    // Consider moving these to ProductList.css for better separation of concerns in larger projects.
     const styleObj = {
         backgroundColor: '#4CAF50',
         color: '#fff!important',
         padding: '15px',
         display: 'flex',
         justifyContent: 'space-between',
-        alignIems: 'center',
+        alignItems: 'center',
         fontSize: '20px',
-    }
+    };
     const styleObjUl = {
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
         width: '1100px',
-    }
+    };
     const styleA = {
         color: 'white',
         fontSize: '30px',
         textDecoration: 'none',
-    }
+    };
 
+    /**
+     * Handles the click event for the "Home" link in the navigation bar.
+     * Prevents the default anchor tag behavior and triggers the `onHomeClick` prop function.
+     * @param {Event} e - The synthetic event object from the click.
+     */
     const handleHomeClick = (e) => {
         e.preventDefault();
         onHomeClick();
     };
 
+    /**
+     * Handles the click event for the shopping cart icon.
+     * Sets `showCart` to true to display the cart and hides the plant list by setting `showPlants` to false.
+     * @param {Event} e - The synthetic event object from the click.
+     */
     const handleCartClick = (e) => {
         e.preventDefault();
-        setShowCart(true); // Set showCart to true when cart icon is clicked
-    };
-    const handlePlantsClick = (e) => {
-        e.preventDefault();
-        setShowPlants(true); // Set showAboutUs to true when "About Us" link is clicked
-        setShowCart(false); // Hide the cart when navigating to About Us
+        setShowCart(true); // Show the shopping cart
+        setShowPlants(false); // Hide the plants list
     };
 
+    /**
+     * Handles the click event for the "Plants" navigation link.
+     * Sets `showPlants` to true to display the plant list and hides the cart by setting `showCart` to false.
+     * @param {Event} e - The synthetic event object from the click.
+     */
+    const handlePlantsClick = (e) => {
+        e.preventDefault();
+        setShowPlants(true); // Show the plants list
+        setShowCart(false); // Hide the shopping cart
+    };
+
+    /**
+     * Handles the "Continue Shopping" button click from within the cart component.
+     * Hides the cart and displays the product list again.
+     * @param {Event} e - The synthetic event object from the click.
+     */
     const handleContinueShopping = (e) => {
         e.preventDefault();
-        setShowCart(false);
+        setShowCart(false); // Hide the cart
+        setShowPlants(true); // Show the plants list
     };
+
+    /**
+     * Handles the "Add to Cart" button click for a specific product.
+     * Dispatches an `addItem` action to the Redux store with the product details.
+     * Updates the local `addedToCart` state to mark the product as added,
+     * which can be used to update the button's appearance (e.g., text, disabled state).
+     * @param {Object} product - The plant object (name, image, description, cost) to add to the cart.
+     */
+    const handleAddToCart = (product) => {
+        dispatch(addItem(product)); // Dispatch the action to add the product to the Redux cart slice
+
+        // Update the local state to reflect that the product has been added.
+        // This ensures the "Added to Cart" text and disabled state persist until page refresh
+        // or a more sophisticated state management for "added" status is implemented.
+        setAddedToCart((prevState) => ({
+            ...prevState, // Spread the previous state to retain existing entries
+            [product.name]: true, // Set the current product's name as a key with value 'true' to mark it as added
+        }));
+    };
+
     return (
         <div>
+            {/* Navigation Bar Section */}
             <div className="navbar" style={styleObj}>
                 <div className="tag">
                     <div className="luxury">
@@ -265,19 +327,61 @@ function ProductList({ onHomeClick }) {
                             </div>
                         </a>
                     </div>
-
                 </div>
                 <div style={styleObjUl}>
+                    {/* Navigation link for Plants page */}
                     <div> <a href="#" onClick={(e) => handlePlantsClick(e)} style={styleA}>Plants</a></div>
-                    <div> <a href="#" onClick={(e) => handleCartClick(e)} style={styleA}><h1 className='cart'><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" id="IconChangeColor" height="68" width="68"><rect width="156" height="156" fill="none"></rect><circle cx="80" cy="216" r="12"></circle><circle cx="184" cy="216" r="12"></circle><path d="M42.3,72H221.7l-26.4,92.4A15.9,15.9,0,0,1,179.9,176H84.1a15.9,15.9,0,0,1-15.4-11.6L32.5,37.8A8,8,0,0,0,24.8,32H8" fill="none" stroke="#faf9f9" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" id="mainIconPathAttribute"></path></svg></h1></a></div>
+                    {/* Navigation link/icon for the shopping cart */}
+                    <div> <a href="#" onClick={(e) => handleCartClick(e)} style={styleA}>
+                        <h1 className='cart'>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" id="IconChangeColor" height="68" width="68">
+                                <rect width="156" height="156" fill="none"></rect>
+                                <circle cx="80" cy="216" r="12"></circle>
+                                <circle cx="184" cy="216" r="12"></circle>
+                                <path d="M42.3,72H221.7l-26.4,92.4A15.9,15.9,0,0,1,179.9,176H84.1a15.9,15.9,0,0,1-15.4-11.6L32.5,37.8A8,8,0,0,0,24.8,32H8" fill="none" stroke="#faf9f9" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" id="mainIconPathAttribute"></path>
+                            </svg>
+                        </h1>
+                    </a></div>
                 </div>
             </div>
-            {!showCart ? (
+
+            {/* Conditional Rendering: Display Product List or Shopping Cart */}
+            {/* The product list is shown if the cart is not active AND the plants view is intended to be shown */}
+            {!showCart && showPlants ? (
                 <div className="product-grid">
-
-
+                    {/* Loop through each plant category defined in plantsArray */}
+                    {plantsArray.map((category, index) => (
+                        <div key={index} className="category-section"> {/* Added a wrapper for category styling */}
+                            <h1 className="category-title">{category.category}</h1> {/* Display the category name */}
+                            <div className="product-list"> {/* Container for individual plant cards within a category */}
+                                {/* Loop through each plant within the current category */}
+                                {category.plants.map((plant, plantIndex) => (
+                                    <div className="product-card" key={plantIndex}> {/* Unique key for each plant card */}
+                                        <img
+                                            className="product-image"
+                                            src={plant.image} // Display the plant image
+                                            alt={plant.name} // Alt text for accessibility
+                                        />
+                                        <div className="product-title">{plant.name}</div> {/* Display plant name */}
+                                        <div className="product-description">{plant.description}</div> {/* Display plant description */}
+                                        <div className="product-cost">{plant.cost}</div> {/* Display plant cost */}
+                                        <button
+                                            className="product-button"
+                                            onClick={() => handleAddToCart(plant)} // Attach the add-to-cart handler
+                                            // Disable the button if this specific product has already been added to the cart
+                                            disabled={addedToCart[plant.name]}
+                                        >
+                                            {/* Conditionally change button text based on whether the product is in the cart */}
+                                            {addedToCart[plant.name] ? 'Added to Cart' : 'Add to Cart'}
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    ))}
                 </div>
             ) : (
+                // If showCart is true, render the CartItem component
                 <CartItem onContinueShopping={handleContinueShopping} />
             )}
         </div>
